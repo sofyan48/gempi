@@ -1,0 +1,19 @@
+// BROKER STATEFULL BEFORE FAILED (Publisher Sending)
+
+{
+    "action": "bca-va-payment",
+    "topic": "payment",
+    "parameter": [{
+        "name": "va_number",
+        "value": "123456"
+    }],
+    "body": {
+        "type": "json",
+        "value": {
+
+        }
+    }
+}
+
+// AFTER FAILED
+
