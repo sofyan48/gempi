@@ -1,4 +1,4 @@
-package main
+package libs
 
 import (
 	"fmt"
@@ -31,7 +31,7 @@ func saveToBroker(db gorm.DB, brokerData *BrokerData) error {
 	return query.Error
 }
 
-func main() {
+func Publis() {
 	godotenv.Load()
 	pubs := &Publisher{}
 	pubs.DB = *connection.GetConnection()

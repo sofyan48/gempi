@@ -1,4 +1,4 @@
-package subs
+package libs
 
 import (
 	"encoding/json"
@@ -47,16 +47,11 @@ type StateFullModels struct {
 	Body      BodyStruct  `json:"body"`
 }
 
-type Publisher struct {
-	DB     gorm.DB
-	Broker *BrokerData
-}
-
-type BrokerData struct {
-	MessageID string `gorm:"column:messageid;type:varchar(50)" json:"messageid"`
-	Data      string `gorm:"column:data;type:string" json:"data"`
-	Status    int    `gorm:"column:status;type:int unsigned" json:"status"`
-}
+// type BrokerData struct {
+// 	MessageID string `gorm:"column:messageid;type:varchar(50)" json:"messageid"`
+// 	Data      string `gorm:"column:data;type:string" json:"data"`
+// 	Status    int    `gorm:"column:status;type:int unsigned" json:"status"`
+// }
 
 func checkBroker(db gorm.DB, id string, broker *BrokerData) error {
 	query := db.Table("broker")
@@ -97,12 +92,12 @@ func DeleteMsg(svc *sqs.SQS, handlerMsg *sqs.Message, url string) {
 	fmt.Printf("Message ID: %s has beed deleted", *handlerMsg.MessageId)
 }
 
-func saveToBroker(db gorm.DB, brokerData *BrokerData) error {
-	query := db.Table("broker")
-	query = query.Create(brokerData)
-	query.Scan(&brokerData)
-	return query.Error
-}
+// func saveToBroker(db gorm.DB, brokerData *BrokerData) error {
+// 	query := db.Table("broker")
+// 	query = query.Create(brokerData)
+// 	query.Scan(&brokerData)
+// 	return query.Error
+// }
 
 func SendMsg(svc *sqs.SQS, url string, data *StateFullModels) string {
 	dataSend, err := json.Marshal(data)
