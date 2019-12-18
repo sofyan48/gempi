@@ -1,16 +1,14 @@
-package main
+# GEMPI
+Implementing Publisher and Consumer with SQS
+## Getting Started
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/joho/godotenv"
-	"github.com/sofyan48/gempi/api"
-	"github.com/sofyan48/gempi/config"
-)
-
-func main() {
-	// load dotenv
+### Installing
+```
+go get github.com/sofyan48/gempi
+```
+### Getting Client
+```
+    // load dotenv
 	godotenv.Load()
 	// configure aws creds
 	cfg := config.Configure()
@@ -20,7 +18,10 @@ func main() {
 	cfg.APArea = "ap-southeast-1"
 	// get sqs client
 	client := config.NewConfig().Credential(cfg).New()
-	// get sqs publisher
+```
+### Publisher
+```
+    // get sqs publisher
 	publisher := api.NewPublisher(client)
 	// Publish Messages
 	result, err := publisher.Publish("test", "TEST")
@@ -28,5 +29,8 @@ func main() {
 		fmt.Println("ERROR : ", err)
 	}
 	fmt.Println(result)
-
-}
+```
+### Consumer
+```
+On Progress
+```
