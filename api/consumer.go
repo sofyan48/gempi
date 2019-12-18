@@ -40,7 +40,6 @@ func (csm *Consumer) Consumer(topic string, cb func(string), delta int) {
 	messages.MaxNumberOfMessages = aws.Int64(3)
 	messages.VisibilityTimeout = aws.Int64(30)
 	messages.WaitTimeSeconds = aws.Int64(20)
-
 	var wg sync.WaitGroup
 	wg.Add(delta)
 	go func() {

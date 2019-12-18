@@ -33,7 +33,7 @@ func main() {
 	producer := api.NewProducer(client)
 	// Publish Messages
 	message := producer.GetMessageInput()
-	message.Topic = "send"
+	message.Topic = "send1"
 	message.Status = "progres"
 	message.Body = "dataBody"
 	message.Parameter = "dataParams"
@@ -46,6 +46,6 @@ func main() {
 	// Create Consumer
 	consumer := api.NewConsumer(client)
 	// consumer get data with callback
-	consumer.Consumer("send", callbackData, 1)
+	consumer.Consumer("send1", callbackData, 1)
 
 }

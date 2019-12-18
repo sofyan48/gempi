@@ -17,20 +17,21 @@ cfg.APArea = "ap-southeast-1"
 // get sqs client
 client := config.NewConfig().Credential(cfg).New()
 ```
-### Publisher
+### Producer
 ```golang
-publisher := api.NewPublisher(client)
+// create sqs Producer
+producer := api.NewProducer(client)
 // Publish Messages
-message := publisher.GetMessageInput()
-message.Topic = "send"
+message := producer.GetMessageInput()
+message.Topic = "send1"
 message.Status = "progres"
-message.Body = "data"
-message.Parameter = "data"
-result, err := publisher.Publish(message)
+message.Body = "dataBody"
+message.Parameter = "dataParams"
+result, err := producer.Send(message)
 if err != nil {
 	fmt.Println("ERROR : ", err)
 }
-fmt.Println(result)
+fmt.Println("Messages Sending : ", result)
 ```
 ### Consumer
 ***Callback***
