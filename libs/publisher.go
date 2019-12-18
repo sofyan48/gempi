@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
-	"github.com/sofyan48/gempi/connection"
+	"github.com/sofyan48/gempi/libs/connection"
 )
 
 type Publisher struct {

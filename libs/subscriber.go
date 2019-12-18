@@ -1,4 +1,4 @@
-package main
+package subs
 
 import (
 	"encoding/json"
@@ -14,7 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
-	"github.com/sofyan48/gempi/connection"
+	"github.com/sofyan48/gempi/libs/connection"
 )
 
 type consumer struct{}
@@ -121,7 +121,7 @@ func SendMsg(svc *sqs.SQS, url string, data *StateFullModels) string {
 	fmt.Println("Data : ", sendResponse)
 	return *sendResponse.MessageId
 }
-func main() {
+func ConsumeMessages() {
 	godotenv.Load()
 	pubs := &Publisher{}
 	pubs.DB = *connection.GetConnection()
