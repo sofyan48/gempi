@@ -23,7 +23,12 @@ func main() {
 	// get sqs publisher
 	publisher := api.NewPublisher(client)
 	// Publish Messages
-	result, err := publisher.Publish("test", "TEST")
+	message := publisher.GetMessageInput()
+	message.Topic = "send"
+	message.Status = "progres"
+	message.Body = "data"
+	message.Parameter = "data"
+	result, err := publisher.Publish(message)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
