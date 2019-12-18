@@ -1,12 +1,35 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/joho/godotenv"
-	"github.com/sofyan48/gempi/libs"
+	"github.com/sofyan48/gempi/api"
+	"github.com/sofyan48/gempi/config"
 )
 
 func main() {
+	// load dotenv
 	godotenv.Load()
-	libs.Publis()
-	libs.ConsumeMessages()
+	// configure aws creds
+	cfg := config.Configure()
+	cfg.PathURL = os.Getenv("SQS_URL")
+	cfg.AwsAccessKeyID = os.Getenv("ACCESS_KEY")
+	cfg.AwsSecretAccessKey = os.Getenv("SECRET_KEY")
+	cfg.APArea = "ap-southeast-1"
+
+	// get sqs client
+	client := config.NewConfig()
+	svc := client.Credential(cfg).New()
+
+	// get sqs publisher
+	publisher := api.NewPublisher(svc)
+	// Publish Messages
+	result, err := publisher.Publish("test", "TEST")
+	if err != nil {
+		fmt.Println("ERROR : ", err)
+	}
+	fmt.Println(result)
+
 }
