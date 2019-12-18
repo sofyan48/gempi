@@ -9,8 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/jinzhu/gorm"
-	"github.com/sofyan48/gempi/connection"
 	"github.com/joho/godotenv"
+	"github.com/sofyan48/gempi/connection"
 )
 
 type Publisher struct {
@@ -58,7 +58,7 @@ func main() {
 		"body": {
 			"type": "json",
 			"value": {
-	
+				
 			}
 		}
 	}`
@@ -76,10 +76,10 @@ func main() {
 	broker := &BrokerData{}
 	broker.MessageID = *sendResponse.MessageId
 	broker.Data = data
-	err = saveToBroker(pubs.DB, broker)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
-	}
+	// err = saveToBroker(pubs.DB, broker)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	os.Exit(0)
+	// }
 	fmt.Println("Data : ", sendResponse)
 }

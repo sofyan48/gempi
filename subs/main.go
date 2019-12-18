@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -33,13 +34,17 @@ type BodyStruct struct {
 	Value BodyValue `json:"value"`
 }
 
+type Recovery struct {
+	VisibleTimeot int `json:"visible_timeout"`
+	Count         int `json:"try_counter"`
+}
+
 type StateFullModels struct {
-	Action     string      `json:"action"`
-	Topic      string      `json:"topic"`
-	IsStatus   string      `json:"is_status"`
-	IsRecovery bool        `json:"is_recovery"`
-	Parameter  []Parameter `json:"parameter"`
-	Body       BodyStruct  `json:"body"`
+	Topic     string      `json:"topic"`
+	Status    string      `json:"status"`
+	Recovery  Recovery    `json:"recovery"`
+	Parameter []Parameter `json:"parameter"`
+	Body      BodyStruct  `json:"body"`
 }
 
 type Publisher struct {
@@ -138,7 +143,7 @@ func main() {
 		WaitTimeSeconds:     aws.Int64(20),
 	}
 	var wgRot sync.WaitGroup
-	wgRot.Add(1)
+	wgRot.Add(10)
 	go func() {
 		for {
 
@@ -151,14 +156,15 @@ func main() {
 				brokers := &BrokerData{}
 				json.Unmarshal([]byte(*message.Body), &data)
 				fmt.Println("Msg ID: ", *message.MessageId)
-				checkBroker(pubs.DB, *message.MessageId, brokers)
+				// checkBroker(pubs.DB, *message.MessageId, brokers)
 				check := actionCallback()
 				fmt.Println(check)
-				if !check {
+				if check {
 					fmt.Println("Eksek Gagal ")
 					brokers.Status = 1
-					data.IsStatus = "fail"
-					data.IsRecovery = true
+					data.Status = "trying"
+					data.Recovery.VisibleTimeot = 12
+					data.Recovery.Count = 5
 					DeleteMsg(svc, message, QueueURL)
 					msgID := SendMsg(svc, QueueURL, data)
 					brokers.MessageID = msgID
@@ -167,11 +173,14 @@ func main() {
 				}
 				fmt.Println("Eksek Berhasil ")
 				brokers.Status = 2
-				DeleteMsg(svc, message, QueueURL)
+				data.Recovery.Count = 0
+				data.Status = "done"
 				updateBroker(pubs.DB, *message.MessageId, brokers)
-				// time.After(time.Second * 10)
+				DeleteMsg(svc, message, QueueURL)
+
 				// next push data to paymentFail
 			}
+			time.After(time.Second * 10)
 		}
 	}()
 	wgRot.Wait()
