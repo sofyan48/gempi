@@ -8,17 +8,17 @@ import (
 	"github.com/sofyan48/gempi/libs"
 )
 
-// Publisher ...
-type Publisher struct {
+// Producer ...
+type Producer struct {
 	session *sqs.SQS
 	config  *entity.AwsConfig
 	awsLibs *libs.Aws
 	awsPubs *libs.Pubs
 }
 
-// NewPublisher pubs Data
-func NewPublisher(client *entity.NewClient) *Publisher {
-	pubs := &Publisher{}
+// NewProducer pubs Data
+func NewProducer(client *entity.NewClient) *Producer {
+	pubs := &Producer{}
 	pubs.config = client.Configs
 	pubs.session = client.Sessions
 	pubs.awsLibs = &libs.Aws{}
@@ -27,12 +27,12 @@ func NewPublisher(client *entity.NewClient) *Publisher {
 }
 
 // GetMessageInput ...
-func (pubs *Publisher) GetMessageInput() *entity.StateFullModels {
+func (pubs *Producer) GetMessageInput() *entity.StateFullModels {
 	return &entity.StateFullModels{}
 }
 
-// Publish ...
-func (pubs *Publisher) Publish(data *entity.StateFullModels) (*sqs.SendMessageOutput, error) {
+// Send ...
+func (pubs *Producer) Send(data *entity.StateFullModels) (*sqs.SendMessageOutput, error) {
 	messages := pubs.awsPubs.GetMessagesInput()
 	body, err := json.Marshal(data)
 	if err != nil {
