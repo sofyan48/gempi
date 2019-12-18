@@ -36,9 +36,9 @@ func (pubs *Pubs) Send(session *sqs.SQS, msgInput *sqs.SendMessageInput) (*sqs.S
 	return sendResponse, nil
 }
 
-// GetMessagesOutput ...
-func (sub *Subs) GetMessagesOutput() *sqs.SendMessageOutput {
-	return &sqs.SendMessageOutput{}
+// ReceiveMessagesInput ...
+func (sub *Subs) ReceiveMessagesInput() *sqs.ReceiveMessageInput {
+	return &sqs.ReceiveMessageInput{}
 }
 
 // Recieved consume messages from sqs
@@ -48,7 +48,7 @@ func (sub *Subs) GetMessagesOutput() *sqs.SendMessageOutput {
 func (sub *Subs) Recieved(svc *sqs.SQS, receiveparams *sqs.ReceiveMessageInput) (*sqs.ReceiveMessageOutput, error) {
 	messages, err := svc.ReceiveMessage(receiveparams)
 	if err != nil {
-		return messages, err
+		return nil, err
 	}
 	return messages, nil
 }

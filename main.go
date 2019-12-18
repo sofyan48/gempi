@@ -1,13 +1,21 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/sofyan48/gempi/api"
 	"github.com/sofyan48/gempi/config"
+	"github.com/sofyan48/gempi/entity"
 )
+
+func callbackData(results string) {
+	obj := &entity.StateFullModels{}
+	json.Unmarshal([]byte(results), &obj)
+	fmt.Println("Data : ", obj)
+}
 
 func main() {
 	// load dotenv
@@ -20,18 +28,24 @@ func main() {
 	cfg.APArea = "ap-southeast-1"
 	// get sqs client
 	client := config.NewConfig().Credential(cfg).New()
-	// get sqs publisher
-	publisher := api.NewPublisher(client)
+
+	// create sqs Producer
+	producer := api.NewProducer(client)
 	// Publish Messages
-	message := publisher.GetMessageInput()
+	message := producer.GetMessageInput()
 	message.Topic = "send"
 	message.Status = "progres"
-	message.Body = "data"
-	message.Parameter = "data"
-	result, err := publisher.Publish(message)
+	message.Body = "dataBody"
+	message.Parameter = "dataParams"
+	result, err := producer.Send(message)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
-	fmt.Println(result)
+	fmt.Println("Messages Sending : ", result)
+
+	// Create Consumer
+	consumer := api.NewConsumer(client)
+	// consumer get data with callback
+	consumer.Consumer("send", callbackData, 1)
 
 }
