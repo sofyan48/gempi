@@ -3,3 +3,4 @@ go.sum
 
 libs/publisher.go
 libs/subscriber.go
+main.go
