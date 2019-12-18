@@ -8,8 +8,6 @@ go get github.com/sofyan48/gempi
 ```
 ### Getting Client
 ```
-    // load dotenv
-	godotenv.Load()
 	// configure aws creds
 	cfg := config.Configure()
 	cfg.PathURL = os.Getenv("SQS_URL")
@@ -21,10 +19,14 @@ go get github.com/sofyan48/gempi
 ```
 ### Publisher
 ```
-    // get sqs publisher
-	publisher := api.NewPublisher(client)
+    publisher := api.NewPublisher(client)
 	// Publish Messages
-	result, err := publisher.Publish("test", "TEST")
+	message := publisher.GetMessageInput()
+	message.Topic = "send"
+	message.Status = "progres"
+	message.Body = "data"
+	message.Parameter = "data"
+	result, err := publisher.Publish(message)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
