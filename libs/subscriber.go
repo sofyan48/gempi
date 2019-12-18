@@ -13,7 +13,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
 	"github.com/sofyan48/gempi/libs/connection"
 )
 
@@ -117,7 +116,7 @@ func SendMsg(svc *sqs.SQS, url string, data *StateFullModels) string {
 	return *sendResponse.MessageId
 }
 func ConsumeMessages() {
-	godotenv.Load()
+
 	pubs := &Publisher{}
 	pubs.DB = *connection.GetConnection()
 	// aws
@@ -154,7 +153,7 @@ func ConsumeMessages() {
 				// checkBroker(pubs.DB, *message.MessageId, brokers)
 				check := actionCallback()
 				fmt.Println(check)
-				if check {
+				if !check {
 					fmt.Println("Eksek Gagal ")
 					brokers.Status = 1
 					data.Status = "trying"

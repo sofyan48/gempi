@@ -9,7 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
 	"github.com/sofyan48/gempi/libs/connection"
 )
 
@@ -32,7 +31,6 @@ func saveToBroker(db gorm.DB, brokerData *BrokerData) error {
 }
 
 func Publis() {
-	godotenv.Load()
 	pubs := &Publisher{}
 	pubs.DB = *connection.GetConnection()
 	// broker
