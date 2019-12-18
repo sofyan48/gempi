@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/sofyan48/gempi/entity"
@@ -25,15 +26,24 @@ func NewPublisher(client *entity.NewClient) *Publisher {
 	return pubs
 }
 
+// GetMessageInput ...
+func (pubs *Publisher) GetMessageInput() *entity.StateFullModels {
+	return &entity.StateFullModels{}
+}
+
 // Publish ...
-func (pubs *Publisher) Publish(topic, data string) (*sqs.SendMessageOutput, error) {
+func (pubs *Publisher) Publish(data *entity.StateFullModels) (*sqs.SendMessageOutput, error) {
 	messages := pubs.awsPubs.GetMessagesInput()
-	messages.MessageBody = aws.String(data)
+	body, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+	messages.MessageBody = aws.String(string(body))
 	messages.QueueUrl = aws.String(pubs.config.PathURL)
 	messages.DelaySeconds = aws.Int64(3)
 	result, err := pubs.awsPubs.Send(pubs.session, messages)
 	if err != nil {
-		return result, err
+		return nil, err
 	}
 	return result, nil
 }
