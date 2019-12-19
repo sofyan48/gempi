@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"sync"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -36,7 +35,7 @@ func (csm *Consumer) GetMessageOutput() *entity.StateFullModels {
 // Consumer ...
 func (csm *Consumer) Consumer(topic string, cb func(string), delta int) {
 	messages := csm.awsSubs.ReceiveMessagesInput()
-	messages.QueueUrl = aws.String(csm.config.PathURL)
+	messages.QueueUrl = aws.String(csm.config.PathURL + "/" + topic)
 	messages.MaxNumberOfMessages = aws.Int64(3)
 	messages.VisibilityTimeout = aws.Int64(30)
 	messages.WaitTimeSeconds = aws.Int64(20)
@@ -49,11 +48,6 @@ func (csm *Consumer) Consumer(topic string, cb func(string), delta int) {
 				continue
 			}
 			for _, message := range msg.Messages {
-				msgData := &entity.StateFullModels{}
-				json.Unmarshal([]byte(*message.Body), &msgData)
-				if msgData.Topic != topic {
-					continue
-				}
 				callback(cb, *message.Body)
 			}
 		}
