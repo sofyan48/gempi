@@ -18,6 +18,8 @@ type Consumer struct {
 }
 
 // NewConsumer pubs Data
+// @client: *entity.NewClient
+// return *Consumer
 func NewConsumer(client *entity.NewClient) *Consumer {
 	consumer := &Consumer{}
 	consumer.config = client.Configs
@@ -27,7 +29,8 @@ func NewConsumer(client *entity.NewClient) *Consumer {
 	return consumer
 }
 
-// GetMessageOutput ...
+// GetMessageOutput statefull
+// return *entity.StateFullModels
 func (csm *Consumer) GetMessageOutput() *entity.StateFullModels {
 	return &entity.StateFullModels{}
 }
@@ -58,6 +61,9 @@ func (csm *Consumer) Subscribe(topic string, cb func(string), delta int) {
 	wg.Wait()
 }
 
+// callback processing function
+// @fn: interface{}
+// @data: interface{}
 func callback(fn interface{}, data interface{}) {
 	switch fn.(type) {
 	case func(string):

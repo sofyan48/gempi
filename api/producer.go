@@ -17,6 +17,8 @@ type Producer struct {
 }
 
 // NewProducer pubs Data
+// @client: *entity.NewClient
+// return *Producer
 func NewProducer(client *entity.NewClient) *Producer {
 	pubs := &Producer{}
 	pubs.config = client.Configs
@@ -26,12 +28,16 @@ func NewProducer(client *entity.NewClient) *Producer {
 	return pubs
 }
 
-// GetMessageInput ...
+// GetMessageInput statefull
+// return *entity.StateFullModels
 func (pubs *Producer) GetMessageInput() *entity.StateFullModels {
 	return &entity.StateFullModels{}
 }
 
-// Send ...
+// Send sending to sqs
+// @topic: string
+// @data: *entity.StateFullModels
+// return *sqs.SendMessageOutput, error
 func (pubs *Producer) Send(topic string, data *entity.StateFullModels) (*sqs.SendMessageOutput, error) {
 	messages := pubs.awsPubs.GetMessagesInput()
 	body, err := json.Marshal(data)
