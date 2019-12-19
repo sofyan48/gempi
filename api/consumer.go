@@ -32,8 +32,11 @@ func (csm *Consumer) GetMessageOutput() *entity.StateFullModels {
 	return &entity.StateFullModels{}
 }
 
-// Consumer ...
-func (csm *Consumer) Consumer(topic string, cb func(string), delta int) {
+// Subscribe topic
+// @topic: string
+// @cb: func(string) // callback
+// @delta: int
+func (csm *Consumer) Subscribe(topic string, cb func(string), delta int) {
 	messages := csm.awsSubs.ReceiveMessagesInput()
 	messages.QueueUrl = aws.String(csm.config.PathURL + "/" + topic)
 	messages.MaxNumberOfMessages = aws.Int64(3)
