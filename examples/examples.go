@@ -11,12 +11,6 @@ import (
 	"github.com/sofyan48/gempi/entity"
 )
 
-func callbackData(results string) {
-	obj := &entity.StateFullModels{}
-	json.Unmarshal([]byte(results), &obj)
-	fmt.Println("Data : ", obj)
-}
-
 func main() {
 	// load dotenv
 	godotenv.Load()
@@ -33,11 +27,11 @@ func main() {
 	producer := api.NewProducer(client)
 	// Publish Messages
 	message := producer.GetMessageInput()
-	message.Topic = "send1"
+	message.Topic = "send"
 	message.Status = "progres"
 	message.Body = "dataBody"
 	message.Parameter = "dataParams"
-	result, err := producer.Send(message)
+	result, err := producer.Send("payment_try", message)
 	if err != nil {
 		fmt.Println("ERROR : ", err)
 	}
@@ -46,6 +40,12 @@ func main() {
 	// Create Consumer
 	consumer := api.NewConsumer(client)
 	// consumer get data with callback
-	consumer.Consumer("send1", callbackData, 1)
+	consumer.Consumer("payment_try", callbackData, 1)
 
+}
+
+func callbackData(results string) {
+	obj := &entity.StateFullModels{}
+	json.Unmarshal([]byte(results), &obj)
+	fmt.Println("Data : ", obj)
 }
