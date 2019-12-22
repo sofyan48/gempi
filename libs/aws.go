@@ -19,6 +19,17 @@ func (aw *Aws) SQSession(cfg *entity.AwsConfig) *sqs.SQS {
 	return svc
 }
 
+// ListQueue list all queue
+// @svc: *sqs.SQS
+// @inQueue: *sqs.ListQueuesInput
+func (aw *Aws) ListQueue(svc *sqs.SQS, inQueue *sqs.ListQueuesInput) (*sqs.ListQueuesOutput, error) {
+	result, err := svc.ListQueues(inQueue)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 // GetMessagesInput ...
 func (pubs *Pubs) GetMessagesInput() *sqs.SendMessageInput {
 	return &sqs.SendMessageInput{}
@@ -51,4 +62,21 @@ func (sub *Subs) Recieved(svc *sqs.SQS, receiveparams *sqs.ReceiveMessageInput) 
 		return nil, err
 	}
 	return messages, nil
+}
+
+// Delete queue
+// @svc: *sqs.SQS
+// @handlerMsg: *sqs.Message
+// @topic string
+// return *sqs.DeleteMessageOutput, error
+func (sub *Subs) Delete(svc *sqs.SQS, handlerMsg *sqs.Message, topic string) (*sqs.DeleteMessageOutput, error) {
+	dels := &sqs.DeleteMessageInput{
+		QueueUrl:      aws.String(topic),
+		ReceiptHandle: handlerMsg.ReceiptHandle,
+	}
+	data, err := svc.DeleteMessage(dels)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
 }
