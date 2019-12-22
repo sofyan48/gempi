@@ -14,10 +14,13 @@ type NewClient struct {
 type Context struct {
 	Message   *sqs.Message
 	StateFull *StateFullModels
+	Data      *StateFullModels
 }
 
 // StateFullModels data modeling for input
 type StateFullModels struct {
+	Topic    string
+	ID       string
 	Status   string   `json:"status"`
 	Recovery Recovery `json:"recovery"`
 	Body     string   `json:"body"`

@@ -25,6 +25,7 @@ func main() {
 	producer := api.NewProducer(client)
 	// Publish Messages
 	message := producer.GetMessageInput()
+	message.Topic = "payment"
 	message.Body = "GEMPI 3"
 	result, err := producer.Send(message)
 	if err != nil {

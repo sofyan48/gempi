@@ -38,18 +38,15 @@ func (pubs *Producer) GetMessageInput() *entity.StateFullModels {
 // @topic: string
 // @data: *entity.StateFullModels
 // return *sqs.SendMessageOutput, error
-func (pubs *Producer) Send(topic string, data *entity.StateFullModels) (*sqs.SendMessageOutput, error) {
+func (pubs *Producer) Send(data *entity.StateFullModels) (*sqs.SendMessageOutput, error) {
 	messages := pubs.awsPubs.GetMessagesInput()
 	body, err := json.Marshal(data)
 	if err != nil {
 		return nil, err
 	}
 	messages.MessageBody = aws.String(string(body))
-	messages.QueueUrl = aws.String(pubs.config.PathURL + "/" + topic)
+	messages.QueueUrl = aws.String(pubs.config.PathURL + "/backend")
 	messages.DelaySeconds = aws.Int64(3)
 	result, err := pubs.awsPubs.Send(pubs.session, messages)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return result, err
 }

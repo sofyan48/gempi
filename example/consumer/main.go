@@ -25,12 +25,15 @@ func main() {
 
 	// Create Consumer
 	consumer := api.NewConsumer(client)
-	consumer.Subscribe(callback)
+	consumer.Subscribe("payment", callback)
 
 }
 
-func callback(context *entity.Context) {
+func callback(context *entity.Context, client *entity.NewClient) {
+	cb := api.GetCallbackFunction()
 	obj := &entity.StateFullModels{}
 	json.Unmarshal([]byte(*context.Message.Body), &obj)
 	fmt.Println("Message Raw From Context", obj)
+	// cb.Flush(client, context.Message, context.Data)
+	cb.Deleted(client, context.Message, context.Data)
 }
