@@ -18,6 +18,7 @@ type Context struct {
 
 // StateFullModels data modeling for input
 type StateFullModels struct {
+	Status   string   `json:"status"`
 	Recovery Recovery `json:"recovery"`
 	Body     string   `json:"body"`
 }

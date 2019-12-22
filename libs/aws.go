@@ -30,6 +30,9 @@ func (aw *Aws) ListQueue(svc *sqs.SQS, inQueue *sqs.ListQueuesInput) (*sqs.ListQ
 	return result, nil
 }
 
+// ChangeVisibile ...
+func (aw *Aws) ChangeVisibile() {}
+
 // GetMessagesInput ...
 func (pubs *Pubs) GetMessagesInput() *sqs.SendMessageInput {
 	return &sqs.SendMessageInput{}
@@ -40,6 +43,23 @@ func (pubs *Pubs) GetMessagesInput() *sqs.SendMessageInput {
 // @msgInput: *sqs.SendMessageInput
 // return *sqs.SendMessageOutput, error
 func (pubs *Pubs) Send(session *sqs.SQS, msgInput *sqs.SendMessageInput) (*sqs.SendMessageOutput, error) {
+	sendResponse, err := session.SendMessage(msgInput)
+	if err != nil {
+		return sendResponse, err
+	}
+	return sendResponse, nil
+}
+
+// GetMessagesInput ...
+func (sub *Subs) GetMessagesInput() *sqs.SendMessageInput {
+	return &sqs.SendMessageInput{}
+}
+
+// Send messages to sqs
+// @svc: *sqs.SQS
+// @msgInput: *sqs.SendMessageInput
+// return *sqs.SendMessageOutput, error
+func (sub *Subs) Send(session *sqs.SQS, msgInput *sqs.SendMessageInput) (*sqs.SendMessageOutput, error) {
 	sendResponse, err := session.SendMessage(msgInput)
 	if err != nil {
 		return sendResponse, err
@@ -75,8 +95,5 @@ func (sub *Subs) Delete(svc *sqs.SQS, handlerMsg *sqs.Message, topic string) (*s
 		ReceiptHandle: handlerMsg.ReceiptHandle,
 	}
 	data, err := svc.DeleteMessage(dels)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
+	return data, err
 }
