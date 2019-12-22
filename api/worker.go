@@ -80,12 +80,12 @@ func (wrk *Worker) worker(id int, messages *sqs.ReceiveMessageInput) {
 				dataSend := &entity.StateFullModels{}
 				dataSend.Status = "onBroker"
 				dataSend.Body = data.Body
+				dataSend.Topic = data.Topic
 				body, _ := json.Marshal(dataSend)
 				msgBroker := wrk.awsSubs.GetMessagesInput()
 				msgBroker.QueueUrl = aws.String(wrk.config.PathURL + "/broker")
 				msgBroker.DelaySeconds = aws.Int64(3)
 				msgBroker.MessageBody = aws.String(string(body))
-				wrk.awsSubs.Send(wrk.session, msgBroker)
 				_, err := wrk.awsSubs.Send(wrk.session, msgBroker)
 				if err != nil {
 					log.Println("Broker : ", err)
@@ -94,7 +94,7 @@ func (wrk *Worker) worker(id int, messages *sqs.ReceiveMessageInput) {
 					if err != nil {
 						log.Println("Backend Error : ", err)
 					} else {
-						log.Println("Messages : ", "OnBroker")
+						log.Println("OK : ", dataSend.Body)
 					}
 
 				}
