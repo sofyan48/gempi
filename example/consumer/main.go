@@ -37,5 +37,5 @@ func callback(context *entity.Context, client *entity.NewClient) {
 	json.Unmarshal([]byte(*context.Message.Body), &obj)
 	fmt.Println("Message Raw From Context", obj)
 	// cb.Flush(client, context.Message, context.Data)
-	cb.Deleted(client, context.Message, context.Data)
+	cb.Deleted(client, context.Message)
 }

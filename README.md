@@ -55,7 +55,7 @@ func callback(context *entity.Context, client *entity.NewClient) {
 	json.Unmarshal([]byte(*context.Message.Body), &obj)
 	fmt.Println("Message Raw From Context", obj)
 	// cb.Flush(client, context.Message, context.Data)
-	cb.Deleted(client, context.Message, context.Data)
+	cb.Deleted(client, context.Message)
 }
 ```
 now get consume
@@ -63,5 +63,5 @@ now get consume
 // Create Consumer
 consumer := api.NewConsumer(client)
 // consumer get data with callback
-consumer.Consumer("send1",callbackData, 1)
+consumer.Consumer("send1", callbackData, 1)
 ```

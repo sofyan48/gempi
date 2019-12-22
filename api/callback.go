@@ -44,7 +44,7 @@ func (clb *Callback) Flush(cl *entity.NewClient, msg *sqs.Message, data *entity.
 // Deleted messages
 // @msg: *sqs.Message
 // @data: *entity.StateFullModels
-func (clb *Callback) Deleted(cl *entity.NewClient, msg *sqs.Message, data *entity.StateFullModels) {
+func (clb *Callback) Deleted(cl *entity.NewClient, msg *sqs.Message) {
 	awsLibs := &libs.Aws{}
 	_, err := awsLibs.Delete(cl.Sessions, msg, cl.Configs.PathURL+"/broker")
 	if err != nil {
