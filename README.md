@@ -17,7 +17,18 @@ cfg.APArea = "ap-southeast-1"
 // get sqs client
 client := config.NewConfig().Credential(cfg).New()
 ```
+
+### Starting Worker
+Before carrying out road activities, start the worker first
+```golang
+// Create Worker
+worker := api.NewWorker(client)
+// worker.SetWorker()
+worker.Start()
+```
+
 ### Producer
+
 ```golang
 // create sqs Producer
 producer := api.NewProducer(client)

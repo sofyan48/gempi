@@ -25,7 +25,6 @@ func main() {
 
 	// Create Consumer
 	consumer := api.NewConsumer(client)
-	// consumer.SetWorker()
 	consumer.Subscribe(callback)
 
 }

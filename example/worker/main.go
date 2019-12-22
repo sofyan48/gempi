@@ -20,9 +20,8 @@ func main() {
 	// get sqs client
 	client := config.NewConfig().Credential(cfg).New()
 
-	// Create Consumer
+	// Create Worker
 	worker := api.NewWorker(client)
 	// worker.SetWorker()
 	worker.Start()
-
 }
