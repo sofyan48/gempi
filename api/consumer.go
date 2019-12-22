@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -35,16 +36,27 @@ func (csm *Consumer) GetMessageOutput() *entity.StateFullModels {
 	return &entity.StateFullModels{}
 }
 
+// Delete ...
+func (csm *Consumer) Delete(handler *sqs.Message, topic string) (*sqs.DeleteMessageOutput, error) {
+	result, err := csm.awsSubs.Delete(csm.session, handler, topic)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 // Subscribe topic
 // @topic: string
 // @cb: func(string) // callback
 // @delta: int
-func (csm *Consumer) Subscribe(topic string, cb func(string), delta int) {
+func (csm *Consumer) Subscribe(topic string, cb func(*entity.Context), delta int) {
 	messages := csm.awsSubs.ReceiveMessagesInput()
 	messages.QueueUrl = aws.String(csm.config.PathURL + "/" + topic)
 	messages.MaxNumberOfMessages = aws.Int64(3)
 	messages.VisibilityTimeout = aws.Int64(30)
 	messages.WaitTimeSeconds = aws.Int64(20)
+	callbackContext := &entity.Context{}
+	callbackDataContext := &entity.StateFullModels{}
 	var wg sync.WaitGroup
 	wg.Add(delta)
 	go func() {
@@ -54,7 +66,9 @@ func (csm *Consumer) Subscribe(topic string, cb func(string), delta int) {
 				continue
 			}
 			for _, message := range msg.Messages {
-				callback(cb, *message.Body)
+				callbackContext.Message = message
+				callbackContext.StateFull = callbackDataContext
+				callback(cb, callbackContext)
 			}
 		}
 	}()
@@ -64,11 +78,13 @@ func (csm *Consumer) Subscribe(topic string, cb func(string), delta int) {
 // callback processing function
 // @fn: interface{}
 // @data: interface{}
-func callback(fn interface{}, data interface{}) {
+func callback(fn interface{}, context interface{}) {
 	switch fn.(type) {
 	case func(string):
-		fn.(func(string))(data.(string))
-	case func(int):
-		fn.(func(int))(data.(int))
+		fn.(func(string))(context.(string))
+	case func(*entity.Context):
+		fn.(func(*entity.Context))(context.(*entity.Context))
+	default:
+		fmt.Println("default")
 	}
 }
