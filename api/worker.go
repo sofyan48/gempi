@@ -84,14 +84,14 @@ func (wrk *Worker) worker(id int, messages *sqs.ReceiveMessageInput) {
 				dataSend.ID = *m.MessageId
 				body, _ := json.Marshal(dataSend)
 				msgBroker := wrk.awsSubs.GetMessagesInput()
-				msgBroker.QueueUrl = aws.String(wrk.config.PathURL + "/broker")
+				msgBroker.QueueUrl = aws.String(wrk.config.PathURL + "/" + wrk.config.Broker)
 				msgBroker.DelaySeconds = aws.Int64(3)
 				msgBroker.MessageBody = aws.String(string(body))
 				_, err := wrk.awsSubs.Send(wrk.session, msgBroker)
 				if err != nil {
 					log.Println("Broker : ", err)
 				} else {
-					_, err = wrk.awsSubs.Delete(wrk.session, m, wrk.config.PathURL+"/backend")
+					_, err = wrk.awsSubs.Delete(wrk.session, m, wrk.config.PathURL+"/"+wrk.config.Backend)
 					if err != nil {
 						log.Println("Backend Error : ", err)
 					} else {

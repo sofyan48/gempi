@@ -45,7 +45,7 @@ func (pubs *Producer) Send(data *entity.StateFullModels) (*sqs.SendMessageOutput
 		return nil, err
 	}
 	messages.MessageBody = aws.String(string(body))
-	messages.QueueUrl = aws.String(pubs.config.PathURL + "/backend")
+	messages.QueueUrl = aws.String(pubs.config.PathURL + "/" + pubs.config.Backend)
 	messages.DelaySeconds = aws.Int64(3)
 	result, err := pubs.awsPubs.Send(pubs.session, messages)
 	return result, err

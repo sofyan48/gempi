@@ -66,7 +66,7 @@ func (csm *Consumer) Subscribe(topic string, cb func(*entity.Context, *entity.Ne
 		csm.SetWorker(1)
 	}
 	messages := csm.awsSubs.ReceiveMessagesInput()
-	messages.QueueUrl = aws.String(csm.config.PathURL + "/broker")
+	messages.QueueUrl = aws.String(csm.config.PathURL + "/" + csm.config.Broker)
 	messages.MaxNumberOfMessages = aws.Int64(3)
 	messages.VisibilityTimeout = aws.Int64(30)
 	messages.WaitTimeSeconds = aws.Int64(20)

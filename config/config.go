@@ -5,11 +5,14 @@ import (
 	"github.com/sofyan48/gempi/libs"
 )
 
+// Configs ...
 type Configs struct {
 	PathURL            string
 	AwsAccessKeyID     string
 	AwsSecretAccessKey string
 	AwsAPArea          string
+	Backend            string
+	Broker             string
 }
 
 // Configure call config entity
@@ -17,6 +20,7 @@ func Configure() *entity.AwsConfig {
 	return &entity.AwsConfig{}
 }
 
+// NewConfig ...
 func NewConfig() *Configs {
 	return &Configs{}
 }
@@ -39,6 +43,8 @@ func (cfg *Configs) New() *entity.NewClient {
 	awsCfg.AwsAccessKeyID = cfg.AwsAccessKeyID
 	awsCfg.AwsSecretAccessKey = cfg.AwsSecretAccessKey
 	awsCfg.APArea = cfg.AwsAPArea
+	awsCfg.Backend = cfg.Backend
+	awsCfg.Broker = cfg.Broker
 	sqs := awsLibs.SQSession(awsCfg)
 	clients.Sessions = sqs
 	clients.Configs = awsCfg

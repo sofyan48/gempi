@@ -14,6 +14,8 @@ cfg.PathURL = os.Getenv("SQS_URL")
 cfg.AwsAccessKeyID = os.Getenv("ACCESS_KEY")
 cfg.AwsSecretAccessKey = os.Getenv("SECRET_KEY")
 cfg.APArea = "ap-southeast-1"
+cfg.Backend = "backend"
+cfg.Broker = "broker"
 // get sqs client
 client := config.NewConfig().Credential(cfg).New()
 ```
@@ -47,10 +49,13 @@ fmt.Println("Messages Sending : ", result)
 ### Consumer
 ***Callback***
 ```golang
-func callbackData(results string) {
+func callback(context *entity.Context, client *entity.NewClient) {
+	cb := api.GetCallbackFunction()
 	obj := &entity.StateFullModels{}
-	json.Unmarshal([]byte(results), &obj)
-	fmt.Println("Data : ", obj)
+	json.Unmarshal([]byte(*context.Message.Body), &obj)
+	fmt.Println("Message Raw From Context", obj)
+	// cb.Flush(client, context.Message, context.Data)
+	cb.Deleted(client, context.Message, context.Data)
 }
 ```
 now get consume
@@ -58,5 +63,5 @@ now get consume
 // Create Consumer
 consumer := api.NewConsumer(client)
 // consumer get data with callback
-consumer.Consumer(callbackData, 1)
+consumer.Consumer("send1",callbackData, 1)
 ```

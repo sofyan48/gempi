@@ -18,6 +18,8 @@ func main() {
 	cfg.AwsAccessKeyID = os.Getenv("ACCESS_KEY")
 	cfg.AwsSecretAccessKey = os.Getenv("SECRET_KEY")
 	cfg.APArea = "ap-southeast-1"
+	cfg.Backend = "backend"
+	cfg.Broker = "broker"
 	// get sqs client
 	client := config.NewConfig().Credential(cfg).New()
 
