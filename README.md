@@ -38,7 +38,7 @@ message.Topic = "send1"
 message.Status = "progres"
 message.Body = "dataBody"
 message.Parameter = "dataParams"
-result, err := producer.Send("payment_try", message)
+result, err := producer.Send(message)
 if err != nil {
 	fmt.Println("ERROR : ", err)
 }
@@ -58,5 +58,5 @@ now get consume
 // Create Consumer
 consumer := api.NewConsumer(client)
 // consumer get data with callback
-consumer.Consumer("payment_try", callbackData, 1)
+consumer.Consumer(callbackData, 1)
 ```
